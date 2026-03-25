@@ -13,17 +13,17 @@ namespace DSO_Email_OTP.Services
             _context = context;
         }
 
-        public async Task<string> GenerateOtpAsync(string email)
+        public async Task<string> GenerateOtpAsync(string emailAddress)
         {
-            if (!email.EndsWith(".dso.org.sg"))
+            if (!emailAddress.EndsWith(".dso.org.sg"))
                 return "STATUS_EMAIL_INVALID";
 
-            var otp = new Random().Next(100000, 999999).ToString();
+            var otpCode = new Random().Next(100000, 999999).ToString();
 
             var entry = new EmailOtpModel
             {
-                EmailAddress = email,
-                OtpCode = otp,
+                EmailAddress = emailAddress,
+                OtpCode = otpCode,
                 ExpiryTime = DateTime.UtcNow.AddMinutes(1),
                 AttemptCount = 0,
                 IsUsed = false
@@ -32,15 +32,15 @@ namespace DSO_Email_OTP.Services
             _context.EmailOtpModels.Add(entry);
             await _context.SaveChangesAsync();
 
-            bool emailSent = SendEmail(email, otp);
+            bool emailSent = SendEmail(emailAddress, otpCode);
 
             return emailSent ? "STATUS_EMAIL_OK" : "STATUS_EMAIL_FAIL";
         }
 
-        public async Task<string> VerifyOtpAsync(string email, string inputOtp)
+        public async Task<string> VerifyOtpAsync(string emailAddress, string inputOtp)
         {
             var entry = await _context.EmailOtpModels
-                .Where(x => x.EmailAddress == email && !x.IsUsed)
+                .Where(x => x.EmailAddress == emailAddress && !x.IsUsed)
                 .OrderByDescending(x => x.Id)
                 .FirstOrDefaultAsync();
 
