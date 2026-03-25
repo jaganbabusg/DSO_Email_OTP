@@ -6,10 +6,11 @@ namespace DSO_Email_OTP.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<EmailOtpModel> EmailOtpModels { get; set; }
+        public DbSet<EmailOtp> EmailOtps { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+
         }
     }
 }

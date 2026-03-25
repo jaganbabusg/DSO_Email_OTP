@@ -2,7 +2,7 @@
 
 namespace DSO_Email_OTP.Models
 {
-    public class EmailOtpModel
+    public class EmailOtp
     {
         public int Id { get; set; }
 

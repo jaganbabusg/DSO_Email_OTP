@@ -20,7 +20,7 @@ namespace DSO_Email_OTP.Services
 
             var otpCode = new Random().Next(100000, 999999).ToString();
 
-            var entry = new EmailOtpModel
+            var entry = new EmailOtp
             {
                 EmailAddress = emailAddress,
                 OtpCode = otpCode,
@@ -29,7 +29,7 @@ namespace DSO_Email_OTP.Services
                 IsUsed = false
             };
 
-            _context.EmailOtpModels.Add(entry);
+            _context.EmailOtps.Add(entry);
             await _context.SaveChangesAsync();
 
             bool emailSent = SendEmail(emailAddress, otpCode);
@@ -39,7 +39,7 @@ namespace DSO_Email_OTP.Services
 
         public async Task<string> VerifyOtpAsync(string emailAddress, string inputOtp)
         {
-            var entry = await _context.EmailOtpModels
+            var entry = await _context.EmailOtps
                 .Where(x => x.EmailAddress == emailAddress && !x.IsUsed)
                 .OrderByDescending(x => x.Id)
                 .FirstOrDefaultAsync();
